@@ -1,5 +1,31 @@
+import mongoose from "mongoose";
 import Conversation from "../Models/conversation.model.js"
 import Message from "../Models/message.model.js"
+
+
+
+
+export const getMEssagesOfSpecificUsers = async (req,res)=>{
+    try {
+       const senderId = req.user._id
+       const {id: receiverId} = req.params;
+
+       const conversation = await Conversation.findOne({
+        participants:{$all:[senderId,receiverId]}
+       }).populate("messages")
+       //Just like .select("-password") removes things from output .populate("") it sends things to the output. Here the messages only of that participants well be shown.
+
+       if(!conversation){
+        return res.status(400).json([])
+       }
+       
+       return res.status(200).json(conversation.messages)
+        
+    } catch (error) {
+        console.log("getMessages bw users error",error.message);
+    }
+}
+
 
 
 
@@ -40,26 +66,5 @@ export const sendMessage = async(req,res)=>{
     } catch (error) {
         console.log("message sending Error" , error.message);
          
-    }
-}
-
-export const getMEssagesOfSpecificUsers = async (req,res)=>{
-    try {
-       const senderId = req.user._id
-       const {id: receiverId} = req.params;
-
-       const conversation = await Conversation.findOne({
-        participants:{$all:[senderId,receiverId]}
-       }).populate("messages")
-       //Just like .select("-password") removes things from output .populate("") it sends things to the output. Here the messages only of that participants well be shown.
-
-       if(!conversation){
-        return res.status(400).json([])
-       }
-       
-       return res.status(200).json(conversation.messages)
-        
-    } catch (error) {
-        console.log("getMessages bw users error",error.message);
     }
 }

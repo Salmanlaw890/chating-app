@@ -3,8 +3,7 @@ import protectMessage from "../Middleware/protectMessage.middleware.js";
 import { getUserForSidebar } from "../Controller/user.controller.js";
 
 const router = express.Router();
-router.use(protectMessage)
 
-router.get("/",getUserForSidebar)
+router.get("/",protectMessage,getUserForSidebar)
 
 export default router;

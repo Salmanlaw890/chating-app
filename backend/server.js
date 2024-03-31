@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import cookieParser from "cookie-parser";
 
 
+
 import connectMongoDB from "./DB/connectMongoDB.js";
 import authRouter from "./Routers/auth.router.js"
 import messageRouter from "./Routers/message.router.js"
@@ -10,6 +11,8 @@ import userRouter from "./Routers/user.router.js"
 
 
 const app = express();
+
+
 
 dotenv.config();
 const port = process.env.PORT || 5000;
