@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import Conversation from "../Models/conversation.model.js"
 import Message from "../Models/message.model.js"
-
+import { getReceiverSocketId } from "../Socket/socket.js";
+import {io} from "../Socket/socket.js"
 
 
 
@@ -55,11 +56,19 @@ export const sendMessage = async(req,res)=>{
         if(newMessage){
             conversation.messages.push(newMessage._id)
         }
-        //todo socket.io creation
-
-
+        
+        
         //This well run in parallel
         await Promise.all([conversation.save(),newMessage.save()])
+        
+        //first we take message from user save it in DB as well as conversation.Now send it to receiver
+        //todo socket.io creation
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            //io.to(<socketID>).emit() used to send message ot 1 specific client
+            io.to(receiverSocketId).emit("newMessage",newMessage)
+        }
+
 
         return res.status(200).json({newMessage});
         

@@ -2,10 +2,13 @@ import React, { useEffect, useRef } from 'react'
 import useGetMessage from '../../hooks/useGetMessage'
 import Message from "./Message"
 import MessageSkeleton from "../Skeleton/MessageSkeleton"
+import useListenMessages from '../../hooks/useListenMessages'
 
 
 const AllMessages = () => {
   const {loading,messages} = useGetMessage()
+  //* this will listen to message coming from socket(user to DB & DB to here)
+  useListenMessages();
   const lastMessageRef = useRef()
 
   useEffect(()=>{
@@ -19,13 +22,13 @@ const AllMessages = () => {
   return (
     <div className='px-4 flex-1 overflow-auto'>
 
-{!loading && messages.length > 0 && messages.map((message, index)=>{
+{!loading && messages.length > 0 && messages.map((message)=>{
       return (
-        <>
-          <div key={index} ref={lastMessageRef}>
+        <React.Fragment key={message._id}>
+          <div key={message._id} ref={lastMessageRef}>
           <Message message={message}/>
           </div>
-        </>
+        </React.Fragment>
       )
     })}
 
